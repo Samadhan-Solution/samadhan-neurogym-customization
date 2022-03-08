@@ -1,0 +1,51 @@
+.smdn-check-list {
+    display: inline-block;
+}
+
+.smdn-check-list .anchor {
+    position: relative;
+    cursor: pointer;
+    display: inline-block;
+    padding: 5px 50px 5px 10px;
+    border: 1px solid #ccc;
+}
+
+.smdn-check-list .anchor:after {
+    position: absolute;
+    content: "";
+    border-left: 2px solid black;
+    border-top: 2px solid black;
+    padding: 5px;
+    right: 10px;
+    top: 20%;
+    -moz-transform: rotate(-135deg);
+    -ms-transform: rotate(-135deg);
+    -o-transform: rotate(-135deg);
+    -webkit-transform: rotate(-135deg);
+    transform: rotate(-135deg);
+}
+
+.smdn-check-list .anchor:active:after {
+    right: 8px;
+    top: 21%;
+}
+
+.smdn-check-list ul.items {
+    padding: 15px;
+    display: none;
+    margin: 0;
+    border: 1px solid #ccc;
+    border-top: none;
+}
+
+.smdn-check-list ul.items li {
+    list-style: none;
+}
+
+.smdn-check-list.visible .anchor {
+    color: #0094ff;
+}
+
+.smdn-check-list.visible .items {
+    display: block;
+}
