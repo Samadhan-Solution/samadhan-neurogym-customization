@@ -1,13 +1,13 @@
 <?php
 /*
-Plugin Name: Samadhan Neurogym Customization
-Description: Simple Neurogym Customization
+Plugin Name: Tribus Neurogym Customization
+Description: Simple Tribus Neurogym Customization
 Author URI: http://www.samadhan.com.bd/
 Author: Samadhan
 Plugin URI: http://www.samadhan.com.bd/
-Version: 1.0.2
+Version: 1.0.3
 */
-
+include_once('admin/AdminSetting.php');
 function samadhan_css_and_js_load(){
     $path=plugin_dir_url(__FILE__);
     wp_enqueue_style('smdn-css',$path.'apps/css/style.css');
@@ -42,22 +42,28 @@ function buddypress_custom_group_tab() {
         global $bp;
         // Get current group page link.
         $group_link = bp_get_group_permalink( $bp->groups->current_group );
-        //$group_link = home_url('/group-videos');
 
+        $group_id = bp_get_current_group_id();
+        $get_templates_ids=get_template_by_group_id($group_id);
+
+        if(!empty($get_templates_ids)){
+          $menu_title_name=  get_option( 'neurogym_customization_menu_title' );
+          $menu_title_slug=preg_replace('/[^A-Za-z0-9-]+/', '-', $menu_title_name);
         // Tab args.
         $tab_args = array(
-            'name'                => esc_html__( 'Group Videos', 'default' ),
-            'slug'                => 'group-videos',
+            'name'                => esc_html__( !empty($menu_title_name)?$menu_title_name:'Videos', 'default' ),
+            'slug'                => $menu_title_slug,
             'screen_function'     => 'smdn_group_custom_tab_screen',
             'position'            => 60,
             'parent_url'          => $group_link,
             'parent_slug'         => $bp->groups->current_group->slug,
-            'default_subnav_slug' => 'group-videos',
-            'item_css_id'         => 'group-videos',
+            'default_subnav_slug' => $menu_title_slug,
+            'item_css_id'         => $menu_title_slug,
         );
 
         // Add sub-tab.
         bp_core_new_subnav_item( $tab_args, 'groups' );
+        }
     }
 }
 
@@ -77,7 +83,7 @@ function smdn_group_custom_tab_screen() {
 
 /*Set title for custom tab.*/
 function smdn_custom_group_tab_title() {
-    echo esc_html__( 'Group Videos', 'default_content' );
+    echo esc_html__( 'Replays and Recordings', 'default_content' );
 }
 
 /*Display content of custom tab.*/
@@ -138,7 +144,7 @@ function smdn_get_template( $post ) {
 //save meta value with save post hook
 add_action( 'save_post', function( $post_id ) {
 
-    if ( isset( $_POST['post_type'] ) && isset( $_POST['smdn_groupids'] ) && 'elementor_library' === $_POST['post_type'] ) {
+    if ( isset( $_POST['post_type'] ) && 'elementor_library' === $_POST['post_type'] ) {
 
         $group_ids=$_POST['smdn_groupids'];
         update_post_meta( $post_id, 'smdn_groupids_'.$post_id, array($group_ids));
